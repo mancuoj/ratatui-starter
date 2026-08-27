@@ -1,13 +1,13 @@
 use ratatui::style::{Color, Modifier, Style};
 
-pub const FG: Color = Color::Rgb(0xC0, 0xCA, 0xF5);
-pub const PALE: Color = Color::Rgb(0x9A, 0xA5, 0xCE);
-pub const DIM: Color = Color::Rgb(0x56, 0x5F, 0x89);
-pub const BORDER: Color = Color::Rgb(0x3B, 0x42, 0x61);
-pub const ACCENT: Color = Color::Rgb(0x7A, 0xA2, 0xF7);
-pub const SEL_BG: Color = Color::Rgb(0x28, 0x34, 0x57);
-pub const RED: Color = Color::Rgb(0xF7, 0x76, 0x8E);
-pub const TEAL: Color = Color::Rgb(0x73, 0xDA, 0xCA);
+pub const FG: Color = Color::Rgb(0xFC, 0xFC, 0xFA);
+pub const PALE: Color = Color::Rgb(0xC1, 0xC0, 0xC0);
+pub const DIM: Color = Color::Rgb(0x72, 0x70, 0x72);
+pub const BORDER: Color = Color::Rgb(0x5B, 0x59, 0x5C);
+pub const ACCENT: Color = Color::Rgb(0xFF, 0xD8, 0x66);
+pub const SEL_BG: Color = Color::Rgb(0x40, 0x3E, 0x41);
+pub const RED: Color = Color::Rgb(0xFF, 0x61, 0x88);
+pub const GREEN: Color = Color::Rgb(0xA9, 0xDC, 0x76);
 
 pub fn text() -> Style {
     Style::new().fg(FG)
@@ -42,7 +42,7 @@ pub fn completed() -> Style {
 }
 
 pub fn success() -> Style {
-    Style::new().fg(TEAL)
+    Style::new().fg(GREEN)
 }
 
 pub fn danger() -> Style {
