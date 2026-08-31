@@ -1,46 +1,25 @@
 use std::time::Duration;
 
 use anyhow::Result;
-use crossterm::event::{self, Event::Key, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
+use crossterm::event::{self, KeyCode, KeyEvent};
 
-use crate::app::{App, Message, Modal};
+use crate::msg::Msg;
 
-pub fn handle_event(app: &App) -> Result<Option<Message>> {
+pub fn handle_event() -> Result<Option<Msg>> {
     if event::poll(Duration::from_millis(250))?
-        && let Key(key) = event::read()?
-        && key.kind == KeyEventKind::Press
+        && let Some(key) = event::read()?.as_key_press_event()
     {
-        return Ok(handle_key(app, key));
+        return Ok(handle_key(key));
     }
     Ok(None)
 }
 
-fn handle_key(app: &App, key: KeyEvent) -> Option<Message> {
-    if key.code == KeyCode::Char('c') && key.modifiers.contains(KeyModifiers::CONTROL) {
-        return Some(Message::Quit);
-    }
-
-    match app.modal {
-        Modal::Add => match key.code {
-            KeyCode::Enter => Some(Message::SubmitAdd),
-            KeyCode::Esc => Some(Message::CancelModal),
-            KeyCode::Backspace => Some(Message::Backspace),
-            KeyCode::Char(c) => Some(Message::Input(c)),
-            _ => None,
-        },
-        Modal::ConfirmDelete { .. } => match key.code {
-            KeyCode::Char('y') | KeyCode::Enter => Some(Message::ConfirmDelete),
-            KeyCode::Char('n') | KeyCode::Esc => Some(Message::CancelModal),
-            _ => None,
-        },
-        Modal::None => match key.code {
-            KeyCode::Char('j') | KeyCode::Down => Some(Message::MoveDown),
-            KeyCode::Char('k') | KeyCode::Up => Some(Message::MoveUp),
-            KeyCode::Char(' ') => Some(Message::Toggle),
-            KeyCode::Char('a') | KeyCode::Enter => Some(Message::OpenAdd),
-            KeyCode::Char('d') | KeyCode::Delete => Some(Message::OpenDelete),
-            KeyCode::Char('q') | KeyCode::Esc => Some(Message::Quit),
-            _ => None,
-        },
+fn handle_key(key: KeyEvent) -> Option<Msg> {
+    match key.code {
+        KeyCode::Char('q') | KeyCode::Esc => Some(Msg::Quit),
+        KeyCode::Up => Some(Msg::Increment),
+        KeyCode::Down => Some(Msg::Decrement),
+        KeyCode::Char('r') => Some(Msg::Reset),
+        _ => None,
     }
 }
