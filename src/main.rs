@@ -19,7 +19,7 @@ fn main() -> Result<()> {
 
 fn run(terminal: &mut DefaultTerminal, model: &mut Model) -> Result<()> {
     while !model.should_quit {
-        terminal.draw(|frame| view::view(model, frame))?;
+        terminal.draw(|f| view::view(model, f))?;
 
         if let Some(msg) = event::handle_event()? {
             update::update(model, msg);

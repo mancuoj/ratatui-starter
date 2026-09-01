@@ -17,8 +17,8 @@ pub fn handle_event() -> Result<Option<Msg>> {
 fn handle_key(key: KeyEvent) -> Option<Msg> {
     match key.code {
         KeyCode::Char('q') | KeyCode::Esc => Some(Msg::Quit),
-        KeyCode::Up => Some(Msg::Increment),
-        KeyCode::Down => Some(Msg::Decrement),
+        KeyCode::Char('j') | KeyCode::Up => Some(Msg::Increment),
+        KeyCode::Char('k') | KeyCode::Down => Some(Msg::Decrement),
         KeyCode::Char('r') => Some(Msg::Reset),
         _ => None,
     }
