@@ -1,29 +1,27 @@
 use anyhow::Result;
-use ratatui::DefaultTerminal;
-
-use crate::model::Model;
-
-mod event;
-mod model;
-mod msg;
-mod update;
-mod view;
+use crossterm::event;
+use starter::{app::App, keys, ui};
 
 fn main() -> Result<()> {
+    let mut app = App::new();
     let mut terminal = ratatui::init();
-    let mut model = Model::default();
-    let result = run(&mut terminal, &mut model);
+    let result = run(&mut app, &mut terminal);
     ratatui::restore();
     result
 }
 
-fn run(terminal: &mut DefaultTerminal, model: &mut Model) -> Result<()> {
-    while !model.should_quit {
-        terminal.draw(|f| view::view(model, f))?;
+fn run(app: &mut App, terminal: &mut ratatui::DefaultTerminal) -> Result<()> {
+    loop {
+        terminal.draw(|f| ui::draw(f, &app))?;
 
-        if let Some(msg) = event::handle_event()? {
-            update::update(model, msg);
+        if let Some(key) = event::read()?.as_key_press_event()
+            && let Some(msg) = keys::translate(app, key)
+        {
+            app.update(msg);
+        }
+
+        if app.should_quit {
+            return Ok(());
         }
     }
-    Ok(())
 }
