@@ -17,6 +17,8 @@ pub fn translate(_app: &App, key: KeyEvent) -> Option<Msg> {
         Char('k') | KeyCode::Up | KeyCode::Right => Some(Msg::Increment),
         Char('j') | KeyCode::Down | KeyCode::Left => Some(Msg::Decrement),
         Char('r') => Some(Msg::Reset),
+        Char('t') => Some(Msg::NextTheme),
+        Char('T') => Some(Msg::PrevTheme),
         _ => None,
     }
 }
@@ -39,8 +41,10 @@ mod tests {
         assert_eq!(translate(&app, ctrl('c')), Some(Msg::Quit));
         assert_eq!(translate(&app, key(Char('q'))), Some(Msg::Quit));
         assert_eq!(translate(&app, key(Char('k'))), Some(Msg::Increment));
+        assert_eq!(translate(&app, key(KeyCode::Up)), Some(Msg::Increment));
         assert_eq!(translate(&app, key(KeyCode::Left)), Some(Msg::Decrement));
         assert_eq!(translate(&app, key(Char('r'))), Some(Msg::Reset));
+        assert_eq!(translate(&app, key(Char('t'))), Some(Msg::NextTheme));
         assert_eq!(translate(&app, key(Char('x'))), None);
     }
 }

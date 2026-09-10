@@ -1,15 +1,20 @@
+use crate::theme::Theme;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Msg {
     Quit,
     Increment,
     Decrement,
     Reset,
+    NextTheme,
+    PrevTheme,
 }
 
 #[derive(Debug, Default)]
 pub struct App {
     pub should_quit: bool,
     pub counter: i64,
+    pub theme: Theme,
 }
 
 impl App {
@@ -17,6 +22,7 @@ impl App {
         Self {
             should_quit: false,
             counter: 0,
+            theme: Theme::default(),
         }
     }
 
@@ -26,6 +32,8 @@ impl App {
             Msg::Increment => self.counter += 1,
             Msg::Decrement => self.counter -= 1,
             Msg::Reset => self.counter = 0,
+            Msg::NextTheme => self.theme = self.theme.next(),
+            Msg::PrevTheme => self.theme = self.theme.prev(),
         }
     }
 }
@@ -40,14 +48,16 @@ mod tests {
 
         app.update(Msg::Increment);
         app.update(Msg::Increment);
-        app.update(Msg::Increment);
         app.update(Msg::Decrement);
-        assert_eq!(app.counter, 2);
+        assert_eq!(app.counter, 1);
 
         app.update(Msg::Reset);
         assert_eq!(app.counter, 0);
 
         app.update(Msg::Quit);
         assert!(app.should_quit);
+
+        app.update(Msg::NextTheme);
+        assert_eq!(app.theme, Theme::TokyoNight);
     }
 }
