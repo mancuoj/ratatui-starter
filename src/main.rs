@@ -12,7 +12,7 @@ fn main() -> Result<()> {
 
 fn run(app: &mut App, terminal: &mut ratatui::DefaultTerminal) -> Result<()> {
     loop {
-        terminal.draw(|f| ui::draw(f, &app))?;
+        terminal.draw(|f| ui::draw(f, app))?;
 
         if let Some(key) = event::read()?.as_key_press_event()
             && let Some(msg) = keys::translate(app, key)

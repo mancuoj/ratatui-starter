@@ -1,0 +1,25 @@
+{
+  "name": "rust",
+  "image": "mcr.microsoft.com/devcontainers/rust:2-1-bookworm",
+  "mounts": [
+    {
+      "source": "devcontainer-cargo-cache-${devcontainerId}",
+      "target": "/usr/local/cargo",
+      "type": "volume"
+    }
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "thang-nm.flow-icons",
+        "usernamehw.errorlens",
+        "k--kato.intellij-idea-keybindings",
+        "barbosshack.crates-io",
+        "streetsidesoftware.code-spell-checker",
+        "yzhang.markdown-all-in-one"
+      ]
+    }
+  }
+}

@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Msg {
     Quit,
     Increment,
@@ -6,6 +6,7 @@ pub enum Msg {
     Reset,
 }
 
+#[derive(Debug, Default)]
 pub struct App {
     pub should_quit: bool,
     pub counter: i64,
@@ -26,5 +27,26 @@ impl App {
             Msg::Decrement => self.counter -= 1,
             Msg::Reset => self.counter = 0,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn update_applies_messages() {
+        let mut app = App::new();
+
+        app.update(Msg::Increment);
+        app.update(Msg::Increment);
+        app.update(Msg::Decrement);
+        assert_eq!(app.counter, 1);
+
+        app.update(Msg::Reset);
+        assert_eq!(app.counter, 0);
+
+        app.update(Msg::Quit);
+        assert!(app.should_quit);
     }
 }
