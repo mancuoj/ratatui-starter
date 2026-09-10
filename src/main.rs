@@ -1,6 +1,6 @@
 use anyhow::Result;
 use crossterm::event;
-use starter::{app::App, keys, ui};
+use starter::{app::App, input, ui};
 
 fn main() -> Result<()> {
     let mut app = App::new();
@@ -15,7 +15,7 @@ fn run(app: &mut App, terminal: &mut ratatui::DefaultTerminal) -> Result<()> {
         terminal.draw(|f| ui::draw(f, app))?;
 
         if let Some(key) = event::read()?.as_key_press_event()
-            && let Some(msg) = keys::translate(app, key)
+            && let Some(msg) = input::translate(app, key)
         {
             app.update(msg);
         }
