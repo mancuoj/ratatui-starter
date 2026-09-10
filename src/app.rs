@@ -40,8 +40,9 @@ mod tests {
 
         app.update(Msg::Increment);
         app.update(Msg::Increment);
+        app.update(Msg::Increment);
         app.update(Msg::Decrement);
-        assert_eq!(app.counter, 1);
+        assert_eq!(app.counter, 2);
 
         app.update(Msg::Reset);
         assert_eq!(app.counter, 0);

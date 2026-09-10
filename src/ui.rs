@@ -7,7 +7,7 @@ use ratatui::{
 
 use crate::app::App;
 
-pub fn draw(frame: &mut Frame, app: &App) {
+pub fn render(frame: &mut Frame, app: &App) {
     let [_, main, footer, _] = Layout::vertical([
         Constraint::Length(1),
         Constraint::Min(0),
