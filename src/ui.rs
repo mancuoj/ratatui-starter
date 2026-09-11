@@ -3,16 +3,16 @@ use ratatui::{
     layout::{Alignment, Constraint, Layout, Rect},
     style::{Color, Style},
     text::{Line, Span},
-    widgets::{Block, BorderType, Padding, Paragraph},
+    widgets::{Block, BorderType, Paragraph},
 };
 
 use crate::app::App;
 use crate::theme::Palette;
 
 pub fn render(f: &mut Frame, app: &App) {
-    let palette = app.theme.palette();
+    let p = app.theme.palette();
 
-    f.render_widget(Block::default().style(palette.base()), f.area());
+    f.render_widget(Block::default().style(p.base()), f.area());
 
     let [_, main, footer, _] = Layout::vertical([
         Constraint::Length(1),
@@ -22,19 +22,19 @@ pub fn render(f: &mut Frame, app: &App) {
     ])
     .areas(f.area());
 
-    let [counter_area, palette_area] =
+    let [counter, pallette] =
         Layout::horizontal([Constraint::Percentage(40), Constraint::Percentage(60)]).areas(main);
-    render_counter(f, counter_area, app, palette);
-    render_palette(f, palette_area, app, palette);
+    render_counter(f, counter, app, p);
+    render_pallette(f, pallette, app, p);
 
-    render_footer(f, footer, palette);
+    render_footer(f, footer, p);
 }
 
-fn render_counter(f: &mut Frame, area: Rect, app: &App, palette: Palette) {
+fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     let content = vec![
         Line::from(vec![
             Span::raw("Counter: "),
-            Span::styled(format!("{}", app.counter), palette.accent().bold()),
+            Span::styled(format!("{}", app.counter), p.accent().bold()),
         ]),
         Line::raw(""),
         Line::raw("j/k    change"),
@@ -43,25 +43,24 @@ fn render_counter(f: &mut Frame, area: Rect, app: &App, palette: Palette) {
 
     let block = Block::bordered()
         .border_type(BorderType::Rounded)
-        .border_style(palette.muted())
-        .padding(Padding::proportional(1))
+        .border_style(p.muted())
         .title(" COUNTER ")
         .title_alignment(Alignment::Center)
-        .title_style(palette.accent().bold());
+        .title_style(p.accent().bold());
 
     let inner = block.inner(area);
     f.render_widget(block, area);
-    center(f, inner, content);
+    render_centered_lines(f, inner, content);
 }
 
-fn render_palette(f: &mut Frame, area: Rect, app: &App, palette: Palette) {
+fn render_pallette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     let entries: [(&str, Color); 6] = [
-        ("muted", palette.muted),
-        ("accent", palette.accent),
-        ("success", palette.success),
-        ("error", palette.error),
-        ("warning", palette.warning),
-        ("info", palette.info),
+        ("muted", p.muted),
+        ("accent", p.accent),
+        ("success", p.success),
+        ("error", p.error),
+        ("warning", p.warning),
+        ("info", p.info),
     ];
 
     let lines: Vec<Line> = entries
@@ -76,29 +75,28 @@ fn render_palette(f: &mut Frame, area: Rect, app: &App, palette: Palette) {
 
     let block = Block::bordered()
         .border_type(BorderType::Rounded)
-        .border_style(palette.muted())
-        .padding(Padding::proportional(1))
+        .border_style(p.muted())
         .title(format!(" PALETTE · {} ", app.theme.name()))
         .title_alignment(Alignment::Center)
-        .title_style(palette.accent().bold());
+        .title_style(p.accent().bold());
 
     let inner = block.inner(area);
     f.render_widget(block, area);
-    center(f, inner, lines);
+    render_centered_lines(f, inner, lines);
 }
 
-fn render_footer(f: &mut Frame, area: Rect, palette: Palette) {
+fn render_footer(f: &mut Frame, area: Rect, p: Palette) {
     let help = Line::from(vec![
-        Span::styled(" [t] ", palette.accent().bold()),
+        Span::styled(" [t] ", p.accent().bold()),
         Span::raw("switch theme"),
         Span::raw("   "),
-        Span::styled(" [q] ", palette.accent().bold()),
+        Span::styled(" [q] ", p.accent().bold()),
         Span::raw("quit"),
     ]);
     f.render_widget(Paragraph::new(help), area);
 }
 
-fn center<'a>(f: &mut Frame, area: Rect, lines: Vec<Line<'a>>) {
+fn render_centered_lines<'a>(f: &mut Frame, area: Rect, lines: Vec<Line<'a>>) {
     let centered = area.centered_vertically(Constraint::Length(lines.len() as u16));
     f.render_widget(Paragraph::new(lines).centered(), centered);
 }
