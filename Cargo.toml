@@ -19,3 +19,6 @@ ratatui = "0.30.2"
 [profile.release]
 lto = "thin"
 strip = true
+
+[lints.rust]
+unsafe_code = "forbid"
