@@ -4,10 +4,7 @@ use starter::{app::App, input, ui};
 
 fn main() -> Result<()> {
     let mut app = App::new();
-    let mut terminal = ratatui::init();
-    let result = run(&mut app, &mut terminal);
-    ratatui::restore();
-    result
+    ratatui::run(|terminal| run(&mut app, terminal))
 }
 
 fn run(app: &mut App, terminal: &mut ratatui::DefaultTerminal) -> Result<()> {

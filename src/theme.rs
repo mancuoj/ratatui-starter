@@ -11,7 +11,7 @@ pub struct Palette {
     pub error: Color,
     pub warning: Color,
     pub info: Color,
-    pub selection_bg: Color,
+    pub sel_bg: Color,
 }
 
 impl Palette {
@@ -25,7 +25,7 @@ impl Palette {
         error: Color::Red,
         warning: Color::Yellow,
         info: Color::Blue,
-        selection_bg: Color::DarkGray,
+        sel_bg: Color::DarkGray,
     };
 
     pub const TOKYO_NIGHT: Palette = Palette {
@@ -38,7 +38,7 @@ impl Palette {
         error: Color::Rgb(0xf7, 0x76, 0x8e),
         warning: Color::Rgb(0xe0, 0xaf, 0x68),
         info: Color::Rgb(0x7d, 0xcf, 0xff),
-        selection_bg: Color::Rgb(0x28, 0x34, 0x57),
+        sel_bg: Color::Rgb(0x28, 0x34, 0x57),
     };
 
     pub const FLEXOKI_LIGHT: Palette = Palette {
@@ -51,7 +51,7 @@ impl Palette {
         error: Color::Rgb(0xaf, 0x30, 0x29),
         warning: Color::Rgb(0xad, 0x83, 0x01),
         info: Color::Rgb(0x20, 0x5e, 0xa6),
-        selection_bg: Color::Rgb(0xe6, 0xe4, 0xd9),
+        sel_bg: Color::Rgb(0xe6, 0xe4, 0xd9),
     };
 
     pub const FLEXOKI_DARK: Palette = Palette {
@@ -64,7 +64,7 @@ impl Palette {
         error: Color::Rgb(0xd1, 0x4d, 0x41),
         warning: Color::Rgb(0xd0, 0xa2, 0x15),
         info: Color::Rgb(0x43, 0x85, 0xbe),
-        selection_bg: Color::Rgb(0x28, 0x27, 0x26),
+        sel_bg: Color::Rgb(0x28, 0x27, 0x26),
     };
 
     pub const ONE_LIGHT: Palette = Palette {
@@ -77,7 +77,7 @@ impl Palette {
         error: Color::Rgb(0xe4, 0x56, 0x49),
         warning: Color::Rgb(0xc1, 0x84, 0x01),
         info: Color::Rgb(0x01, 0x84, 0xbc),
-        selection_bg: Color::Rgb(0xe5, 0xe5, 0xe6),
+        sel_bg: Color::Rgb(0xe5, 0xe5, 0xe6),
     };
 
     pub const ONE_DARK: Palette = Palette {
@@ -90,7 +90,7 @@ impl Palette {
         error: Color::Rgb(0xe0, 0x6c, 0x75),
         warning: Color::Rgb(0xe5, 0xc0, 0x7b),
         info: Color::Rgb(0x56, 0xb6, 0xc2),
-        selection_bg: Color::Rgb(0x3e, 0x44, 0x51),
+        sel_bg: Color::Rgb(0x3e, 0x44, 0x51),
     };
 
     pub const GRUVBOX: Palette = Palette {
@@ -103,7 +103,7 @@ impl Palette {
         error: Color::Rgb(0xfb, 0x49, 0x34),
         warning: Color::Rgb(0xfa, 0xbd, 0x2f),
         info: Color::Rgb(0x45, 0x85, 0x88),
-        selection_bg: Color::Rgb(0x50, 0x49, 0x45),
+        sel_bg: Color::Rgb(0x50, 0x49, 0x45),
     };
 
     pub const DRACULA: Palette = Palette {
@@ -116,7 +116,7 @@ impl Palette {
         error: Color::Rgb(0xff, 0x55, 0x55),
         warning: Color::Rgb(0xf1, 0xfa, 0x8c),
         info: Color::Rgb(0x8b, 0xe9, 0xfd),
-        selection_bg: Color::Rgb(0x44, 0x47, 0x5a),
+        sel_bg: Color::Rgb(0x44, 0x47, 0x5a),
     };
 
     pub fn base(self) -> Style {
@@ -156,7 +156,7 @@ impl Palette {
     }
 
     pub fn sel(self) -> Style {
-        Style::new().bg(self.selection_bg)
+        Style::new().bg(self.sel_bg).fg(self.fg)
     }
 }
 
