@@ -1,7 +1,7 @@
 use ratatui::{
     Frame,
     layout::{Alignment, Constraint, Layout, Rect},
-    style::{Color, Style},
+    style::Style,
     text::{Line, Span},
     widgets::{Block, BorderType, Paragraph},
 };
@@ -22,28 +22,33 @@ pub fn render(f: &mut Frame, app: &App) {
     ])
     .areas(f.area());
 
-    let [counter, pallette] =
+    let [counter, palette] =
         Layout::horizontal([Constraint::Percentage(40), Constraint::Percentage(60)]).areas(main);
     render_counter(f, counter, app, p);
-    render_pallette(f, pallette, app, p);
+    render_palette(f, palette, app, p);
 
-    render_footer(f, footer, p);
+    render_hint(
+        f,
+        footer,
+        p,
+        &[("t", "next theme"), ("T", "prev theme"), ("q", "quit")],
+    );
 }
 
 fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     let content = vec![
         Line::from(vec![
             Span::raw("Counter: "),
-            Span::styled(format!("{}", app.counter), p.accent().bold()),
+            Span::styled(format!("{:<4}", app.counter), p.accent().bold()),
         ]),
         Line::raw(""),
-        Line::raw("j/k    change"),
-        Line::raw("r      reset"),
+        Line::styled("j/k    change", p.muted()),
+        Line::styled("r      reset", p.muted()),
     ];
 
     let block = Block::bordered()
         .border_type(BorderType::Rounded)
-        .border_style(p.muted())
+        .border_style(p.border())
         .title(" COUNTER ")
         .title_alignment(Alignment::Center)
         .title_style(p.accent().bold());
@@ -53,30 +58,27 @@ fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     render_centered_lines(f, inner, content);
 }
 
-fn render_pallette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
-    let entries: [(&str, Color); 6] = [
-        ("muted", p.muted),
-        ("accent", p.accent),
-        ("success", p.success),
-        ("error", p.error),
-        ("warning", p.warning),
-        ("info", p.info),
+fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
+    let roles: [(&str, Style); 8] = [
+        ("muted", p.muted()),
+        ("border", p.border()),
+        ("accent", p.accent()),
+        ("success", p.success()),
+        ("error", p.error()),
+        ("warning", p.warning()),
+        ("info", p.info()),
+        ("selection", p.sel()),
     ];
 
-    let lines: Vec<Line> = entries
+    let lines: Vec<Line> = roles
         .iter()
-        .map(|(name, color)| {
-            Line::from(vec![
-                Span::styled("\u{25cf} ", Style::default().fg(*color)),
-                Span::styled(format!(" {name:<8} "), Style::default().fg(*color)),
-            ])
-        })
+        .map(|(name, style)| Line::styled(format!(" \u{25c6}  {name:<10}"), *style))
         .collect();
 
     let block = Block::bordered()
         .border_type(BorderType::Rounded)
-        .border_style(p.muted())
-        .title(format!(" PALETTE · {} ", app.theme.name()))
+        .border_style(p.border())
+        .title(format!(" PALETTE \u{b7} {} ", app.theme.name()))
         .title_alignment(Alignment::Center)
         .title_style(p.accent().bold());
 
@@ -85,15 +87,20 @@ fn render_pallette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     render_centered_lines(f, inner, lines);
 }
 
-fn render_footer(f: &mut Frame, area: Rect, p: Palette) {
-    let help = Line::from(vec![
-        Span::styled(" [t] ", p.accent().bold()),
-        Span::raw("switch theme"),
-        Span::raw("   "),
-        Span::styled(" [q] ", p.accent().bold()),
-        Span::raw("quit"),
-    ]);
-    f.render_widget(Paragraph::new(help), area);
+fn render_hint<'a>(f: &mut Frame, area: Rect, p: Palette, entries: &[(&'a str, &'a str)]) {
+    let mut spans = vec![Span::raw(" ")];
+
+    for (index, (key, label)) in entries.iter().enumerate() {
+        if index > 0 {
+            spans.push(Span::styled("  \u{b7}  ", p.muted()));
+        }
+
+        spans.push(Span::styled(*key, p.accent().bold()));
+        spans.push(Span::raw(" "));
+        spans.push(Span::styled(*label, p.muted()));
+    }
+
+    f.render_widget(Paragraph::new(Line::from(spans)), area);
 }
 
 fn render_centered_lines<'a>(f: &mut Frame, area: Rect, lines: Vec<Line<'a>>) {

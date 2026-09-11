@@ -45,6 +45,7 @@ mod tests {
         assert_eq!(translate(&app, key(KeyCode::Left)), Some(Msg::Decrement));
         assert_eq!(translate(&app, key(Char('r'))), Some(Msg::Reset));
         assert_eq!(translate(&app, key(Char('t'))), Some(Msg::NextTheme));
+        assert_eq!(translate(&app, key(Char('T'))), Some(Msg::PrevTheme));
         assert_eq!(translate(&app, key(Char('x'))), None);
     }
 }

@@ -59,5 +59,8 @@ mod tests {
 
         app.update(Msg::NextTheme);
         assert_eq!(app.theme, Theme::TokyoNight);
+
+        app.update(Msg::PrevTheme);
+        assert_eq!(app.theme, Theme::System);
     }
 }
