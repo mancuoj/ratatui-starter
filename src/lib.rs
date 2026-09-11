@@ -11,9 +11,7 @@
 //! animations) travels the same path as any other message.
 //!
 //! `main.rs` only owns the terminal lifecycle, and delegates it to
-//! [`ratatui::run`]: that call enters raw mode and the alternate screen,
-//! installs a panic hook so a crash restores the terminal instead of leaving it
-//! in raw mode, runs the event/render loop, and restores the terminal on exit.
+//! [`ratatui::run`].
 
 pub mod app;
 pub mod input;

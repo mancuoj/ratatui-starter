@@ -1,6 +1,6 @@
 use crate::theme::Theme;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Msg {
     Quit,
     Tick,
