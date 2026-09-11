@@ -123,38 +123,6 @@ impl Palette {
         Style::new().bg(self.bg).fg(self.fg)
     }
 
-    pub fn fg(self) -> Style {
-        Style::new().fg(self.fg)
-    }
-
-    pub fn muted(self) -> Style {
-        Style::new().fg(self.muted)
-    }
-
-    pub fn border(self) -> Style {
-        Style::new().fg(self.border)
-    }
-
-    pub fn accent(self) -> Style {
-        Style::new().fg(self.accent)
-    }
-
-    pub fn success(self) -> Style {
-        Style::new().fg(self.success)
-    }
-
-    pub fn error(self) -> Style {
-        Style::new().fg(self.error)
-    }
-
-    pub fn warning(self) -> Style {
-        Style::new().fg(self.warning)
-    }
-
-    pub fn info(self) -> Style {
-        Style::new().fg(self.info)
-    }
-
     pub fn sel(self) -> Style {
         Style::new().bg(self.sel_bg).fg(self.fg)
     }

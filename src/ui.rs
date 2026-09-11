@@ -1,8 +1,8 @@
 use ratatui::{
     Frame,
     layout::{Alignment, Constraint, Rect},
-    macros::{horizontal, vertical},
-    style::Style,
+    macros::{horizontal, line, vertical},
+    style::{Style, Stylize},
     text::{Line, Span},
     widgets::{Block, BorderType, Paragraph},
 };
@@ -31,21 +31,20 @@ pub fn render(f: &mut Frame, app: &App) {
 
 fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     let content = vec![
-        Line::from(vec![
-            Span::raw("Counter: "),
-            Span::styled(format!("{:<4}", app.counter), p.accent().bold()),
-        ]),
-        Line::raw(""),
-        Line::styled("j/k    change", p.muted()),
-        Line::styled("r      reset", p.muted()),
+        line![
+            "Counter: ",
+            format!("{:<4}", app.counter).fg(p.accent).bold()
+        ],
+        Line::default(),
+        Line::from("j/k    change".fg(p.muted)),
+        Line::from("r      reset".fg(p.muted)),
     ];
 
     let block = Block::bordered()
         .border_type(BorderType::Rounded)
-        .border_style(p.border())
-        .title(" COUNTER ")
-        .title_alignment(Alignment::Center)
-        .title_style(p.accent().bold());
+        .border_style(p.border)
+        .title(" COUNTER ".fg(p.accent).bold())
+        .title_alignment(Alignment::Center);
 
     let inner = block.inner(area);
     f.render_widget(block, area);
@@ -54,13 +53,13 @@ fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
 
 fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     let swatches: [(&str, Style); 8] = [
-        ("muted", p.muted()),
-        ("border", p.border()),
-        ("accent", p.accent()),
-        ("success", p.success()),
-        ("error", p.error()),
-        ("warning", p.warning()),
-        ("info", p.info()),
+        ("muted", p.muted.into()),
+        ("border", p.border.into()),
+        ("accent", p.accent.into()),
+        ("success", p.success.into()),
+        ("error", p.error.into()),
+        ("warning", p.warning.into()),
+        ("info", p.info.into()),
         ("selection", p.sel()),
     ];
 
@@ -71,10 +70,13 @@ fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
 
     let block = Block::bordered()
         .border_type(BorderType::Rounded)
-        .border_style(p.border())
-        .title(format!(" PALETTE {MIDDLE_DOT} {} ", app.theme.name()))
-        .title_alignment(Alignment::Center)
-        .title_style(p.accent().bold());
+        .border_style(p.border)
+        .title(
+            format!(" PALETTE {MIDDLE_DOT} {} ", app.theme.name())
+                .fg(p.accent)
+                .bold(),
+        )
+        .title_alignment(Alignment::Center);
 
     let inner = block.inner(area);
     f.render_widget(block, area);
@@ -85,11 +87,11 @@ fn render_hint<'a>(f: &mut Frame, area: Rect, p: Palette, entries: &[(&'a str, &
     let mut spans = vec![Span::raw(" ")];
     for (index, (key, label)) in entries.iter().enumerate() {
         if index > 0 {
-            spans.push(Span::styled(format!("  {MIDDLE_DOT}  "), p.muted()));
+            spans.push(format!("  {MIDDLE_DOT}  ").fg(p.muted));
         }
-        spans.push(Span::styled(*key, p.accent().bold()));
+        spans.push((*key).fg(p.accent).bold());
         spans.push(Span::raw(" "));
-        spans.push(Span::styled(*label, p.muted()));
+        spans.push((*label).fg(p.muted));
     }
     f.render_widget(Paragraph::new(Line::from(spans)), area);
 }
