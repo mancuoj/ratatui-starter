@@ -7,10 +7,13 @@ use ratatui::{
     widgets::{Block, BorderType, Paragraph},
 };
 
-use crate::app::{App, Focus};
+use crate::app::{App, Focus, Overlay};
 use crate::theme::Palette;
 
+pub mod modal;
+
 const DIAMOND: &str = "◆";
+const CIRCLE: &str = "●";
 const MIDDLE_DOT: &str = "·";
 const SPINNER: [&str; 10] = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
@@ -23,6 +26,8 @@ pub fn render(f: &mut Frame, app: &App) {
     render_counter(f, counter, app, p);
     render_palette(f, palette, app, p);
     render_hint(f, footer, app, p);
+
+    modal::render(f, app, p);
 }
 
 fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
@@ -79,14 +84,17 @@ fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
 }
 
 fn render_hint(f: &mut Frame, area: Rect, app: &App, p: Palette) {
-    let entries: &[(&str, &str)] = match app.focus {
-        Focus::Counter => &[
-            ("q", "quit"),
-            ("tab", "tabs"),
-            ("j/k", "change"),
-            ("r", "reset"),
-        ],
-        Focus::Palette => &[("q", "quit"), ("tab", "tabs"), ("t/T", "themes")],
+    let entries: &[(&str, &str)] = match app.overlay {
+        Overlay::Theme { .. } => &[("j/k", "preview"), ("enter", "apply"), ("esc", "cancel")],
+        Overlay::None => match app.focus {
+            Focus::Counter => &[
+                ("q", "quit"),
+                ("tab", "tabs"),
+                ("j/k", "change"),
+                ("r", "reset"),
+            ],
+            Focus::Palette => &[("q", "quit"), ("tab", "tabs"), ("t", "themes")],
+        },
     };
 
     let mut spans = vec![Span::raw(" ")];

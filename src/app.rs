@@ -23,17 +23,29 @@ impl Focus {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum Overlay {
+    #[default]
+    None,
+    Theme {
+        original: Theme,
+    },
+}
+
 #[derive(Debug, PartialEq, Eq)]
 pub enum Msg {
     Quit,
     Tick,
     FocusNext,
     FocusPrev,
+    OpenTheme,
+    OverlayNext,
+    OverlayPrev,
+    OverlayConfirm,
+    OverlayClose,
     Increment,
     Decrement,
     Reset,
-    NextTheme,
-    PrevTheme,
 }
 
 #[derive(Debug, Default)]
@@ -41,6 +53,7 @@ pub struct App {
     pub should_quit: bool,
     pub tick: u64,
     pub focus: Focus,
+    pub overlay: Overlay,
     pub counter: i64,
     pub theme: Theme,
 }
@@ -56,11 +69,31 @@ impl App {
             Msg::Tick => self.tick += 1,
             Msg::FocusNext => self.focus = self.focus.next(),
             Msg::FocusPrev => self.focus = self.focus.prev(),
+            Msg::OpenTheme => {
+                self.overlay = Overlay::Theme {
+                    original: self.theme,
+                }
+            }
+            Msg::OverlayNext => {
+                if matches!(self.overlay, Overlay::Theme { .. }) {
+                    self.theme = self.theme.next();
+                }
+            }
+            Msg::OverlayPrev => {
+                if matches!(self.overlay, Overlay::Theme { .. }) {
+                    self.theme = self.theme.prev();
+                }
+            }
+            Msg::OverlayConfirm => self.overlay = Overlay::None,
+            Msg::OverlayClose => {
+                if let Overlay::Theme { original } = self.overlay {
+                    self.theme = original;
+                }
+                self.overlay = Overlay::None;
+            }
             Msg::Increment => self.counter += 1,
             Msg::Decrement => self.counter -= 1,
             Msg::Reset => self.counter = 0,
-            Msg::NextTheme => self.theme = self.theme.next(),
-            Msg::PrevTheme => self.theme = self.theme.prev(),
         }
     }
 }
@@ -87,12 +120,6 @@ mod tests {
 
         app.update(Msg::Reset);
         assert_eq!(app.counter, 0);
-
-        app.update(Msg::NextTheme);
-        assert_eq!(app.theme, Theme::TokyoNight);
-
-        app.update(Msg::PrevTheme);
-        assert_eq!(app.theme, Theme::System);
     }
 
     #[test]
@@ -108,5 +135,37 @@ mod tests {
 
         app.update(Msg::FocusPrev);
         assert_eq!(app.focus, Focus::Palette);
+    }
+
+    #[test]
+    fn theme_overlay_previews_while_moving() {
+        let mut app = App::new();
+        app.update(Msg::OpenTheme);
+        assert_eq!(
+            app.overlay,
+            Overlay::Theme {
+                original: Theme::System
+            }
+        );
+
+        app.update(Msg::OverlayNext);
+        app.update(Msg::OverlayNext);
+        assert_eq!(app.theme, Theme::FlexokiLight, "moving previews");
+
+        app.update(Msg::OverlayConfirm);
+        assert_eq!(app.theme, Theme::FlexokiLight);
+        assert_eq!(app.overlay, Overlay::None);
+    }
+
+    #[test]
+    fn closing_the_theme_overlay_restores_the_original() {
+        let mut app = App::new();
+        app.update(Msg::OpenTheme);
+        app.update(Msg::OverlayNext);
+        app.update(Msg::OverlayPrev);
+        app.update(Msg::OverlayClose);
+
+        assert_eq!(app.theme, Theme::System);
+        assert_eq!(app.overlay, Overlay::None);
     }
 }
