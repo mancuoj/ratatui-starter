@@ -47,7 +47,7 @@ fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
 
     let inner = block.inner(area);
     f.render_widget(block, area);
-    render_centered_lines(f, inner, content);
+    centered_lines(f, inner, content);
 }
 
 fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
@@ -80,7 +80,7 @@ fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
 
     let inner = block.inner(area);
     f.render_widget(block, area);
-    render_centered_lines(f, inner, lines);
+    centered_lines(f, inner, lines);
 }
 
 fn render_hint(f: &mut Frame, area: Rect, app: &App, p: Palette) {
@@ -109,7 +109,7 @@ fn render_hint(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     f.render_widget(Paragraph::new(Line::from(spans)), area);
 }
 
-fn render_centered_lines<'a>(f: &mut Frame, area: Rect, lines: Vec<Line<'a>>) {
+fn centered_lines<'a>(f: &mut Frame, area: Rect, lines: Vec<Line<'a>>) {
     let row = area.centered_vertically(Constraint::Length(lines.len() as u16));
     f.render_widget(Paragraph::new(lines).centered(), row);
 }

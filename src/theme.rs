@@ -41,58 +41,6 @@ impl Palette {
         sel_bg: Color::Rgb(0x28, 0x34, 0x57), // bg_visual: blend(blue0, 40%, bg)
     };
 
-    pub const FLEXOKI_LIGHT: Palette = Palette {
-        bg: Color::Rgb(0xff, 0xfc, 0xf0),
-        fg: Color::Rgb(0x10, 0x0f, 0x0f),
-        muted: Color::Rgb(0x6f, 0x6e, 0x69),
-        border: Color::Rgb(0xda, 0xd8, 0xce),
-        accent: Color::Rgb(0x24, 0x83, 0x7b),
-        success: Color::Rgb(0x66, 0x80, 0x0b),
-        error: Color::Rgb(0xaf, 0x30, 0x29),
-        warning: Color::Rgb(0xad, 0x83, 0x01),
-        info: Color::Rgb(0x20, 0x5e, 0xa6),
-        sel_bg: Color::Rgb(0xe6, 0xe4, 0xd9),
-    };
-
-    pub const FLEXOKI_DARK: Palette = Palette {
-        bg: Color::Rgb(0x10, 0x0f, 0x0f),
-        fg: Color::Rgb(0xce, 0xcd, 0xc3),
-        muted: Color::Rgb(0x87, 0x85, 0x80),
-        border: Color::Rgb(0x34, 0x33, 0x31),
-        accent: Color::Rgb(0x3a, 0xa9, 0x9f),
-        success: Color::Rgb(0x87, 0x9a, 0x39),
-        error: Color::Rgb(0xd1, 0x4d, 0x41),
-        warning: Color::Rgb(0xd0, 0xa2, 0x15),
-        info: Color::Rgb(0x43, 0x85, 0xbe),
-        sel_bg: Color::Rgb(0x28, 0x27, 0x26),
-    };
-
-    pub const ONE_LIGHT: Palette = Palette {
-        bg: Color::Rgb(0xfa, 0xfa, 0xfa),
-        fg: Color::Rgb(0x38, 0x3a, 0x42),
-        muted: Color::Rgb(0xa0, 0xa1, 0xa7),
-        border: Color::Rgb(0xd3, 0xd4, 0xd5), // syntax-guide = fade(fg, 20%)
-        accent: Color::Rgb(0x40, 0x78, 0xf2),
-        success: Color::Rgb(0x50, 0xa1, 0x4f),
-        error: Color::Rgb(0xe4, 0x56, 0x49),
-        warning: Color::Rgb(0xc1, 0x84, 0x01),
-        info: Color::Rgb(0x01, 0x84, 0xbc),
-        sel_bg: Color::Rgb(0xe5, 0xe5, 0xe6), // syntax-selection = darken(bg, 8%)
-    };
-
-    pub const ONE_DARK: Palette = Palette {
-        bg: Color::Rgb(0x28, 0x2c, 0x34),
-        fg: Color::Rgb(0xab, 0xb2, 0xbf),
-        muted: Color::Rgb(0x5c, 0x63, 0x70),
-        border: Color::Rgb(0x3c, 0x40, 0x49), // syntax-guide = fade(fg, 15%)
-        accent: Color::Rgb(0x61, 0xaf, 0xef),
-        success: Color::Rgb(0x98, 0xc3, 0x79),
-        error: Color::Rgb(0xe0, 0x6c, 0x75),
-        warning: Color::Rgb(0xe5, 0xc0, 0x7b),
-        info: Color::Rgb(0x56, 0xb6, 0xc2),
-        sel_bg: Color::Rgb(0x3e, 0x44, 0x51), // syntax-selection = lighten(bg, 10%)
-    };
-
     pub const GRUVBOX: Palette = Palette {
         bg: Color::Rgb(0x28, 0x28, 0x28),
         fg: Color::Rgb(0xeb, 0xdb, 0xb2),
@@ -145,22 +93,14 @@ pub enum Theme {
     #[default]
     System,
     TokyoNight,
-    FlexokiLight,
-    FlexokiDark,
-    OneLight,
-    OneDark,
     Gruvbox,
     Dracula,
 }
 
 impl Theme {
-    pub const ALL: [Theme; 8] = [
+    pub const ALL: [Theme; 4] = [
         Theme::System,
         Theme::TokyoNight,
-        Theme::FlexokiLight,
-        Theme::FlexokiDark,
-        Theme::OneLight,
-        Theme::OneDark,
         Theme::Gruvbox,
         Theme::Dracula,
     ];
@@ -169,10 +109,6 @@ impl Theme {
         match self {
             Theme::System => "System",
             Theme::TokyoNight => "Tokyo Night",
-            Theme::FlexokiLight => "Flexoki Light",
-            Theme::FlexokiDark => "Flexoki Dark",
-            Theme::OneLight => "One Light",
-            Theme::OneDark => "One Dark",
             Theme::Gruvbox => "Gruvbox",
             Theme::Dracula => "Dracula",
         }
@@ -194,10 +130,6 @@ impl Theme {
         match self {
             Theme::System => Palette::SYSTEM,
             Theme::TokyoNight => Palette::TOKYO_NIGHT,
-            Theme::FlexokiLight => Palette::FLEXOKI_LIGHT,
-            Theme::FlexokiDark => Palette::FLEXOKI_DARK,
-            Theme::OneLight => Palette::ONE_LIGHT,
-            Theme::OneDark => Palette::ONE_DARK,
             Theme::Gruvbox => Palette::GRUVBOX,
             Theme::Dracula => Palette::DRACULA,
         }
