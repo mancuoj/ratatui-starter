@@ -12,8 +12,8 @@ use crate::ui::CIRCLE;
 
 pub fn render(f: &mut Frame, app: &App, p: Palette) {
     match app.overlay {
-        Overlay::None => {}
-        Overlay::Theme { original } => render_theme_modal(f, app.theme, original, p),
+        None => {}
+        Some(Overlay::Theme { original }) => render_theme_modal(f, app.theme, original, p),
     }
 }
 

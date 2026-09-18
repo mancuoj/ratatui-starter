@@ -23,13 +23,9 @@ impl Focus {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Overlay {
-    #[default]
-    None,
-    Theme {
-        original: Theme,
-    },
+    Theme { original: Theme },
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -38,14 +34,16 @@ pub enum Msg {
     Tick,
     FocusNext,
     FocusPrev,
-    OpenTheme,
-    OverlayNext,
-    OverlayPrev,
-    OverlayConfirm,
-    OverlayClose,
     Increment,
     Decrement,
     Reset,
+    // overlay
+    Open(Overlay),
+    Confirm,
+    Cancel,
+    // overlay - theme
+    ThemeNext,
+    ThemePrev,
 }
 
 #[derive(Debug, Default)]
@@ -53,7 +51,7 @@ pub struct App {
     pub should_quit: bool,
     pub tick: u64,
     pub focus: Focus,
-    pub overlay: Overlay,
+    pub overlay: Option<Overlay>,
     pub counter: i64,
     pub theme: Theme,
 }
@@ -69,31 +67,28 @@ impl App {
             Msg::Tick => self.tick += 1,
             Msg::FocusNext => self.focus = self.focus.next(),
             Msg::FocusPrev => self.focus = self.focus.prev(),
-            Msg::OpenTheme => {
-                self.overlay = Overlay::Theme {
-                    original: self.theme,
-                }
-            }
-            Msg::OverlayNext => {
-                if matches!(self.overlay, Overlay::Theme { .. }) {
-                    self.theme = self.theme.next();
-                }
-            }
-            Msg::OverlayPrev => {
-                if matches!(self.overlay, Overlay::Theme { .. }) {
-                    self.theme = self.theme.prev();
-                }
-            }
-            Msg::OverlayConfirm => self.overlay = Overlay::None,
-            Msg::OverlayClose => {
-                if let Overlay::Theme { original } = self.overlay {
-                    self.theme = original;
-                }
-                self.overlay = Overlay::None;
-            }
             Msg::Increment => self.counter += 1,
             Msg::Decrement => self.counter -= 1,
             Msg::Reset => self.counter = 0,
+            Msg::Open(overlay) => self.overlay = Some(overlay),
+            Msg::Confirm => self.overlay = None,
+            Msg::Cancel => {
+                match self.overlay {
+                    Some(Overlay::Theme { original }) => self.theme = original,
+                    None => {}
+                }
+                self.overlay = None;
+            }
+            Msg::ThemeNext => {
+                if matches!(self.overlay, Some(Overlay::Theme { .. })) {
+                    self.theme = self.theme.next();
+                }
+            }
+            Msg::ThemePrev => {
+                if matches!(self.overlay, Some(Overlay::Theme { .. })) {
+                    self.theme = self.theme.prev();
+                }
+            }
         }
     }
 }

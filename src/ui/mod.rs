@@ -85,8 +85,8 @@ fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
 
 fn render_hint(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     let entries: &[(&str, &str)] = match app.overlay {
-        Overlay::Theme { .. } => &[("j/k", "preview"), ("enter", "apply"), ("esc", "cancel")],
-        Overlay::None => match app.focus {
+        Some(Overlay::Theme { .. }) => &[("j/k", "preview"), ("enter", "apply"), ("esc", "cancel")],
+        None => match app.focus {
             Focus::Counter => &[
                 ("q", "quit"),
                 ("tab", "tabs"),

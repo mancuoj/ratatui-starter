@@ -12,8 +12,10 @@ pub fn translate(app: &App, key: KeyEvent) -> Option<Msg> {
         return Some(Msg::Quit);
     }
 
-    if app.overlay != Overlay::None {
-        return overlay_key(key);
+    if let Some(overlay) = app.overlay {
+        return match overlay {
+            Overlay::Theme { .. } => theme_key(key),
+        };
     }
 
     match key.code {
@@ -25,16 +27,16 @@ pub fn translate(app: &App, key: KeyEvent) -> Option<Msg> {
 
     match app.focus {
         Focus::Counter => counter_key(key),
-        Focus::Palette => palette_key(key),
+        Focus::Palette => palette_key(app, key),
     }
 }
 
-fn overlay_key(key: KeyEvent) -> Option<Msg> {
+fn theme_key(key: KeyEvent) -> Option<Msg> {
     match key.code {
-        Char('j') | KeyCode::Down => Some(Msg::OverlayNext),
-        Char('k') | KeyCode::Up => Some(Msg::OverlayPrev),
-        KeyCode::Enter => Some(Msg::OverlayConfirm),
-        Char('q') | KeyCode::Esc => Some(Msg::OverlayClose),
+        Char('j') | KeyCode::Down => Some(Msg::ThemeNext),
+        Char('k') | KeyCode::Up => Some(Msg::ThemePrev),
+        KeyCode::Enter => Some(Msg::Confirm),
+        Char('q') | KeyCode::Esc => Some(Msg::Cancel),
         _ => None,
     }
 }
@@ -48,9 +50,11 @@ fn counter_key(key: KeyEvent) -> Option<Msg> {
     }
 }
 
-fn palette_key(key: KeyEvent) -> Option<Msg> {
+fn palette_key(app: &App, key: KeyEvent) -> Option<Msg> {
     match key.code {
-        Char('t') => Some(Msg::OpenTheme),
+        Char('t') => Some(Msg::Open(Overlay::Theme {
+            original: app.theme,
+        })),
         _ => None,
     }
 }
@@ -81,15 +85,14 @@ mod tests {
     #[test]
     fn an_open_modal_owns_the_keyboard() {
         let mut app = App::new();
-        app.update(Msg::OpenTheme);
+        app.update(Msg::Open(Overlay::Theme {
+            original: app.theme,
+        }));
 
-        assert_eq!(translate(&app, key(Char('j'))), Some(Msg::OverlayNext));
-        assert_eq!(translate(&app, key(KeyCode::Up)), Some(Msg::OverlayPrev));
-        assert_eq!(
-            translate(&app, key(KeyCode::Enter)),
-            Some(Msg::OverlayConfirm)
-        );
-        assert_eq!(translate(&app, key(KeyCode::Esc)), Some(Msg::OverlayClose));
+        assert_eq!(translate(&app, key(Char('j'))), Some(Msg::ThemeNext));
+        assert_eq!(translate(&app, key(KeyCode::Up)), Some(Msg::ThemePrev));
+        assert_eq!(translate(&app, key(KeyCode::Enter)), Some(Msg::Confirm));
+        assert_eq!(translate(&app, key(KeyCode::Esc)), Some(Msg::Cancel));
 
         assert_eq!(translate(&app, key(KeyCode::Tab)), None);
         assert_eq!(translate(&app, key(Char('r'))), None);
