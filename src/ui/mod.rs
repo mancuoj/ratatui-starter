@@ -15,7 +15,7 @@ pub mod modal;
 const DIAMOND: &str = "◆";
 const CIRCLE: &str = "●";
 const MIDDLE_DOT: &str = "·";
-const SPINNER: [&str; 10] = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+const SPINNER: [&str; 10] = ["⠋", "⠙", "⠚", "⠞", "⠖", "⠦", "⠴", "⠲", "⠳", "⠓"];
 
 pub fn render(f: &mut Frame, app: &App) {
     let p = app.theme.palette();
@@ -70,7 +70,7 @@ fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
         ("error", p.error.into()),
         ("warning", p.warning.into()),
         ("info", p.info.into()),
-        ("selection", p.sel()),
+        ("selection", p.sel(true)),
     ];
 
     let lines: Vec<Line> = swatches

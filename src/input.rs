@@ -34,7 +34,7 @@ fn overlay_key(key: KeyEvent) -> Option<Msg> {
         Char('j') | KeyCode::Down => Some(Msg::OverlayNext),
         Char('k') | KeyCode::Up => Some(Msg::OverlayPrev),
         KeyCode::Enter => Some(Msg::OverlayConfirm),
-        KeyCode::Esc => Some(Msg::OverlayClose),
+        Char('q') | KeyCode::Esc => Some(Msg::OverlayClose),
         _ => None,
     }
 }

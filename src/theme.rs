@@ -71,19 +71,23 @@ impl Palette {
         Style::new().bg(self.bg).fg(self.fg)
     }
 
-    pub fn sel(self) -> Style {
-        Style::new().bg(self.sel_bg).fg(self.fg)
+    pub fn title(self, focus: bool) -> Style {
+        if focus {
+            Style::new().fg(self.accent).bold()
+        } else {
+            Style::new().fg(self.muted)
+        }
     }
 
     pub fn border(self, focus: bool) -> Style {
         Style::new().fg(if focus { self.accent } else { self.border })
     }
 
-    pub fn title(self, focus: bool) -> Style {
-        if focus {
-            Style::new().fg(self.accent).bold()
+    pub fn sel(self, selected: bool) -> Style {
+        if selected {
+            Style::new().bg(self.sel_bg).fg(self.fg)
         } else {
-            Style::new().fg(self.muted)
+            self.base()
         }
     }
 }
