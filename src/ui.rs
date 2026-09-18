@@ -12,6 +12,7 @@ use crate::theme::Palette;
 
 const DIAMOND: &str = "◆";
 const MIDDLE_DOT: &str = "·";
+const SPINNER: [&str; 10] = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
 pub fn render(f: &mut Frame, app: &App) {
     let p = app.theme.palette();
@@ -40,10 +41,11 @@ fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
         Line::from("r      reset".fg(p.muted)),
     ];
 
+    let spinner = SPINNER[(app.tick as usize) % SPINNER.len()];
     let block = Block::bordered()
         .border_type(BorderType::Rounded)
         .border_style(p.border)
-        .title(" COUNTER ".fg(p.accent).bold())
+        .title(format!(" {spinner} COUNTER ").fg(p.accent).bold())
         .title_alignment(Alignment::Center);
 
     let inner = block.inner(area);

@@ -6,7 +6,9 @@
 //! - [`ui`] renders the current [`app::App`] state into the terminal frame.
 //!
 //! Data flows one way: key event → [`input::translate`] → [`app::Msg`] →
-//! [`app::App::update`] → new state → [`ui::render`].
+//! [`app::App::update`] → new state → [`ui::render`]. The loop also emits
+//! [`app::Msg::Tick`] on a fixed interval, so time-based state (spinners,
+//! animations) travels the same path as any other message.
 //!
 //! `main.rs` only owns the terminal lifecycle, and delegates it to
 //! [`ratatui::run`]: that call enters raw mode and the alternate screen,
