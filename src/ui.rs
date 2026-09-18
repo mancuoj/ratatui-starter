@@ -7,7 +7,7 @@ use ratatui::{
     widgets::{Block, BorderType, Paragraph},
 };
 
-use crate::app::App;
+use crate::app::{App, Focus};
 use crate::theme::Palette;
 
 const DIAMOND: &str = "◆";
@@ -22,31 +22,23 @@ pub fn render(f: &mut Frame, app: &App) {
     let [counter, palette] = horizontal![== 40%, == 60%].areas(main);
     render_counter(f, counter, app, p);
     render_palette(f, palette, app, p);
-    render_hint(
-        f,
-        footer,
-        p,
-        &[("t", "next theme"), ("T", "prev theme"), ("q", "quit")],
-    );
+    render_hint(f, footer, app, p);
 }
 
 fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
-    let content = vec![
-        line![
-            "Counter: ",
-            format!("{:<4}", app.counter).fg(p.accent).bold()
-        ],
-        Line::default(),
-        Line::from("j/k    change".fg(p.muted)),
-        Line::from("r      reset".fg(p.muted)),
-    ];
+    let focus = app.focus == Focus::Counter;
 
     let spinner = SPINNER[(app.tick as usize) % SPINNER.len()];
     let block = Block::bordered()
         .border_type(BorderType::Rounded)
-        .border_style(p.border)
-        .title(format!(" {spinner} COUNTER ").fg(p.accent).bold())
+        .border_style(p.border(focus))
+        .title(Line::styled(format!(" {spinner} COUNTER "), p.title(focus)))
         .title_alignment(Alignment::Center);
+
+    let content = vec![line![
+        "Counter: ",
+        format!("{:<4}", app.counter).fg(p.accent).bold()
+    ]];
 
     let inner = block.inner(area);
     f.render_widget(block, area);
@@ -54,6 +46,17 @@ fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
 }
 
 fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
+    let focus = app.focus == Focus::Palette;
+
+    let block = Block::bordered()
+        .border_type(BorderType::Rounded)
+        .border_style(p.border(focus))
+        .title(Line::styled(
+            format!(" PALETTE {MIDDLE_DOT} {} ", app.theme.name()),
+            p.title(focus),
+        ))
+        .title_alignment(Alignment::Center);
+
     let swatches: [(&str, Style); 8] = [
         ("muted", p.muted.into()),
         ("border", p.border.into()),
@@ -70,26 +73,26 @@ fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
         .map(|(name, style)| Line::styled(format!(" {DIAMOND}  {name:<10}"), *style))
         .collect();
 
-    let block = Block::bordered()
-        .border_type(BorderType::Rounded)
-        .border_style(p.border)
-        .title(
-            format!(" PALETTE {MIDDLE_DOT} {} ", app.theme.name())
-                .fg(p.accent)
-                .bold(),
-        )
-        .title_alignment(Alignment::Center);
-
     let inner = block.inner(area);
     f.render_widget(block, area);
     render_centered_lines(f, inner, lines);
 }
 
-fn render_hint<'a>(f: &mut Frame, area: Rect, p: Palette, entries: &[(&'a str, &'a str)]) {
+fn render_hint(f: &mut Frame, area: Rect, app: &App, p: Palette) {
+    let entries: &[(&str, &str)] = match app.focus {
+        Focus::Counter => &[
+            ("q", "quit"),
+            ("tab", "tabs"),
+            ("j/k", "change"),
+            ("r", "reset"),
+        ],
+        Focus::Palette => &[("q", "quit"), ("tab", "tabs"), ("t/T", "themes")],
+    };
+
     let mut spans = vec![Span::raw(" ")];
     for (index, (key, label)) in entries.iter().enumerate() {
         if index > 0 {
-            spans.push(format!("  {MIDDLE_DOT}  ").fg(p.muted));
+            spans.push(Span::raw("  "));
         }
         spans.push((*key).fg(p.accent).bold());
         spans.push(Span::raw(" "));

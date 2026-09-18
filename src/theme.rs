@@ -18,7 +18,7 @@ impl Palette {
     pub const SYSTEM: Palette = Palette {
         bg: Color::Reset,
         fg: Color::Reset,
-        muted: Color::DarkGray,
+        muted: Color::Gray,
         border: Color::DarkGray,
         accent: Color::Cyan,
         success: Color::Green,
@@ -125,6 +125,18 @@ impl Palette {
 
     pub fn sel(self) -> Style {
         Style::new().bg(self.sel_bg).fg(self.fg)
+    }
+
+    pub fn border(self, focus: bool) -> Style {
+        Style::new().fg(if focus { self.accent } else { self.border })
+    }
+
+    pub fn title(self, focus: bool) -> Style {
+        if focus {
+            Style::new().fg(self.accent).bold()
+        } else {
+            Style::new().fg(self.muted)
+        }
     }
 }
 
