@@ -2,10 +2,7 @@ use std::time::{Duration, Instant};
 
 use anyhow::Result;
 use crossterm::event;
-use starter::{
-    app::{App, Msg},
-    input, ui,
-};
+use starter::{app::App, input, model::Msg, ui};
 
 const TICK_RATE: Duration = Duration::from_millis(100);
 

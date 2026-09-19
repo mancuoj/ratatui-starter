@@ -1,50 +1,7 @@
-use crate::theme::Theme;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
-pub enum Focus {
-    #[default]
-    Counter,
-    Palette,
-}
-
-impl Focus {
-    pub const ALL: [Focus; 2] = [Focus::Counter, Focus::Palette];
-
-    pub fn idx(self) -> usize {
-        Self::ALL.iter().position(|f| *f == self).unwrap_or(0)
-    }
-
-    pub fn next(self) -> Self {
-        Self::ALL[(self.idx() + 1) % Self::ALL.len()]
-    }
-
-    pub fn prev(self) -> Self {
-        Self::ALL[(self.idx() + Self::ALL.len() - 1) % Self::ALL.len()]
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Overlay {
-    Theme { original: Theme },
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum Msg {
-    Quit,
-    Tick,
-    FocusNext,
-    FocusPrev,
-    Increment,
-    Decrement,
-    Reset,
-    // overlay
-    Open(Overlay),
-    Confirm,
-    Cancel,
-    // overlay - theme
-    ThemeNext,
-    ThemePrev,
-}
+use crate::{
+    model::{Focus, Msg, Overlay},
+    theme::Theme,
+};
 
 #[derive(Debug, Default)]
 pub struct App {
@@ -52,8 +9,8 @@ pub struct App {
     pub tick: u64,
     pub focus: Focus,
     pub overlay: Option<Overlay>,
-    pub counter: i64,
     pub theme: Theme,
+    pub counter: i64,
 }
 
 impl App {
@@ -67,9 +24,7 @@ impl App {
             Msg::Tick => self.tick += 1,
             Msg::FocusNext => self.focus = self.focus.next(),
             Msg::FocusPrev => self.focus = self.focus.prev(),
-            Msg::Increment => self.counter += 1,
-            Msg::Decrement => self.counter -= 1,
-            Msg::Reset => self.counter = 0,
+            // overlay
             Msg::Open(overlay) => self.overlay = Some(overlay),
             Msg::Confirm => self.overlay = None,
             Msg::Cancel => {
@@ -79,6 +34,7 @@ impl App {
                 }
                 self.overlay = None;
             }
+            // overlay - theme
             Msg::ThemeNext => {
                 if matches!(self.overlay, Some(Overlay::Theme { .. })) {
                     self.theme = self.theme.next();
@@ -89,6 +45,10 @@ impl App {
                     self.theme = self.theme.prev();
                 }
             }
+            // counter
+            Msg::Increment => self.counter += 1,
+            Msg::Decrement => self.counter -= 1,
+            Msg::Reset => self.counter = 0,
         }
     }
 }

@@ -32,26 +32,26 @@ impl Palette {
         bg: Color::Rgb(0x1a, 0x1b, 0x26),
         fg: Color::Rgb(0xc0, 0xca, 0xf5),
         muted: Color::Rgb(0x56, 0x5f, 0x89),
-        border: Color::Rgb(0x3b, 0x42, 0x61), // fg_gutter
+        border: Color::Rgb(0x3b, 0x42, 0x61),
         accent: Color::Rgb(0x7a, 0xa2, 0xf7),
         success: Color::Rgb(0x9e, 0xce, 0x6a),
         error: Color::Rgb(0xf7, 0x76, 0x8e),
         warning: Color::Rgb(0xe0, 0xaf, 0x68),
         info: Color::Rgb(0x7d, 0xcf, 0xff),
-        sel_bg: Color::Rgb(0x28, 0x34, 0x57), // bg_visual: blend(blue0, 40%, bg)
+        sel_bg: Color::Rgb(0x28, 0x34, 0x57),
     };
 
-    pub const GRUVBOX: Palette = Palette {
-        bg: Color::Rgb(0x28, 0x28, 0x28),
-        fg: Color::Rgb(0xeb, 0xdb, 0xb2),
-        muted: Color::Rgb(0x92, 0x83, 0x74),
-        border: Color::Rgb(0x3c, 0x38, 0x36),
-        accent: Color::Rgb(0xd7, 0x99, 0x21),
-        success: Color::Rgb(0xb8, 0xbb, 0x26),
-        error: Color::Rgb(0xfb, 0x49, 0x34),
-        warning: Color::Rgb(0xfa, 0xbd, 0x2f),
-        info: Color::Rgb(0x45, 0x85, 0x88),
-        sel_bg: Color::Rgb(0x50, 0x49, 0x45),
+    pub const VESPER: Palette = Palette {
+        bg: Color::Rgb(0x10, 0x10, 0x10),
+        fg: Color::Rgb(0xff, 0xff, 0xff),
+        muted: Color::Rgb(0x8b, 0x8b, 0x8b),
+        border: Color::Rgb(0x28, 0x28, 0x28),
+        accent: Color::Rgb(0xff, 0xc7, 0x99),
+        success: Color::Rgb(0x99, 0xff, 0xe4),
+        error: Color::Rgb(0xff, 0x80, 0x80),
+        warning: Color::Rgb(0xff, 0xc7, 0x99),
+        info: Color::Rgb(0xac, 0xa1, 0xcf),
+        sel_bg: Color::Rgb(0x23, 0x23, 0x23),
     };
 
     pub const DRACULA: Palette = Palette {
@@ -97,7 +97,7 @@ pub enum Theme {
     #[default]
     System,
     TokyoNight,
-    Gruvbox,
+    Vesper,
     Dracula,
 }
 
@@ -105,7 +105,7 @@ impl Theme {
     pub const ALL: [Theme; 4] = [
         Theme::System,
         Theme::TokyoNight,
-        Theme::Gruvbox,
+        Theme::Vesper,
         Theme::Dracula,
     ];
 
@@ -113,7 +113,7 @@ impl Theme {
         match self {
             Theme::System => "System",
             Theme::TokyoNight => "Tokyo Night",
-            Theme::Gruvbox => "Gruvbox",
+            Theme::Vesper => "Vesper",
             Theme::Dracula => "Dracula",
         }
     }
@@ -134,7 +134,7 @@ impl Theme {
         match self {
             Theme::System => Palette::SYSTEM,
             Theme::TokyoNight => Palette::TOKYO_NIGHT,
-            Theme::Gruvbox => Palette::GRUVBOX,
+            Theme::Vesper => Palette::VESPER,
             Theme::Dracula => Palette::DRACULA,
         }
     }

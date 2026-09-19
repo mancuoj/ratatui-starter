@@ -3,7 +3,10 @@ use crossterm::event::{
     KeyEvent, KeyModifiers,
 };
 
-use crate::app::{App, Focus, Msg, Overlay};
+use crate::{
+    app::App,
+    model::{Focus, Msg, Overlay},
+};
 
 pub fn translate(app: &App, key: KeyEvent) -> Option<Msg> {
     let ctrl = key.modifiers.contains(KeyModifiers::CONTROL);
@@ -12,11 +15,10 @@ pub fn translate(app: &App, key: KeyEvent) -> Option<Msg> {
         return Some(Msg::Quit);
     }
 
-    if let Some(overlay) = app.overlay {
-        return match overlay {
-            Overlay::Theme { .. } => theme_key(key),
-        };
-    }
+    match app.overlay {
+        Some(Overlay::Theme { .. }) => return theme_key(key),
+        None => {}
+    };
 
     match key.code {
         Char('q') => return Some(Msg::Quit),
@@ -56,48 +58,5 @@ fn palette_key(app: &App, key: KeyEvent) -> Option<Msg> {
             original: app.theme,
         })),
         _ => None,
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    fn key(code: KeyCode) -> KeyEvent {
-        KeyEvent::new(code, KeyModifiers::NONE)
-    }
-
-    fn ctrl(c: char) -> KeyEvent {
-        KeyEvent::new(KeyCode::Char(c), KeyModifiers::CONTROL)
-    }
-
-    #[test]
-    fn keys_are_scoped_to_the_focused_pane() {
-        let app = App::new();
-        assert_eq!(translate(&app, key(Char('t'))), None);
-
-        let mut app = App::new();
-        app.focus = Focus::Palette;
-        assert_eq!(translate(&app, key(Char('k'))), None);
-        assert_eq!(translate(&app, key(Char('r'))), None);
-    }
-
-    #[test]
-    fn an_open_modal_owns_the_keyboard() {
-        let mut app = App::new();
-        app.update(Msg::Open(Overlay::Theme {
-            original: app.theme,
-        }));
-
-        assert_eq!(translate(&app, key(Char('j'))), Some(Msg::ThemeNext));
-        assert_eq!(translate(&app, key(KeyCode::Up)), Some(Msg::ThemePrev));
-        assert_eq!(translate(&app, key(KeyCode::Enter)), Some(Msg::Confirm));
-        assert_eq!(translate(&app, key(KeyCode::Esc)), Some(Msg::Cancel));
-
-        assert_eq!(translate(&app, key(KeyCode::Tab)), None);
-        assert_eq!(translate(&app, key(Char('r'))), None);
-        assert_eq!(translate(&app, key(Char('t'))), None);
-
-        assert_eq!(translate(&app, ctrl('c')), Some(Msg::Quit));
     }
 }

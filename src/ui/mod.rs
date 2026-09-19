@@ -7,10 +7,10 @@ use ratatui::{
     widgets::{Block, BorderType, Paragraph},
 };
 
-use crate::app::{App, Focus, Overlay};
-use crate::theme::Palette;
+use crate::{app::App, model::Focus};
+use crate::{model::Overlay, theme::Palette};
 
-pub mod modal;
+pub mod overlay;
 
 const DIAMOND: &str = "◆";
 const CIRCLE: &str = "●";
@@ -23,14 +23,14 @@ pub fn render(f: &mut Frame, app: &App) {
 
     let [_, main, footer, _] = vertical![== 1, >= 0, == 1, == 1].areas(f.area());
     let [counter, palette] = horizontal![== 40%, == 60%].areas(main);
-    render_counter(f, counter, app, p);
-    render_palette(f, palette, app, p);
-    render_hint(f, footer, app, p);
+    render_counter(f, app, p, counter);
+    render_palette(f, app, p, palette);
+    render_hint(f, app, p, footer);
 
-    modal::render(f, app, p);
+    overlay::render(f, app, p);
 }
 
-fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
+fn render_counter(f: &mut Frame, app: &App, p: Palette, area: Rect) {
     let focus = app.focus == Focus::Counter;
 
     let spinner = SPINNER[(app.tick as usize) % SPINNER.len()];
@@ -47,10 +47,10 @@ fn render_counter(f: &mut Frame, area: Rect, app: &App, p: Palette) {
 
     let inner = block.inner(area);
     f.render_widget(block, area);
-    centered_lines(f, inner, content);
+    centered_lines(f, content, inner);
 }
 
-fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
+fn render_palette(f: &mut Frame, app: &App, p: Palette, area: Rect) {
     let focus = app.focus == Focus::Palette;
 
     let block = Block::bordered()
@@ -80,10 +80,10 @@ fn render_palette(f: &mut Frame, area: Rect, app: &App, p: Palette) {
 
     let inner = block.inner(area);
     f.render_widget(block, area);
-    centered_lines(f, inner, lines);
+    centered_lines(f, lines, inner);
 }
 
-fn render_hint(f: &mut Frame, area: Rect, app: &App, p: Palette) {
+fn render_hint(f: &mut Frame, app: &App, p: Palette, area: Rect) {
     let entries: &[(&str, &str)] = match app.overlay {
         Some(Overlay::Theme { .. }) => &[("j/k", "preview"), ("enter", "apply"), ("esc", "cancel")],
         None => match app.focus {
@@ -109,7 +109,7 @@ fn render_hint(f: &mut Frame, area: Rect, app: &App, p: Palette) {
     f.render_widget(Paragraph::new(Line::from(spans)), area);
 }
 
-fn centered_lines<'a>(f: &mut Frame, area: Rect, lines: Vec<Line<'a>>) {
+fn centered_lines<'a>(f: &mut Frame, lines: Vec<Line<'a>>, area: Rect) {
     let row = area.centered_vertically(Constraint::Length(lines.len() as u16));
     f.render_widget(Paragraph::new(lines).centered(), row);
 }

@@ -6,18 +6,18 @@ use ratatui::{
     widgets::{Block, BorderType, Clear, Padding, Paragraph},
 };
 
-use crate::app::{App, Overlay};
 use crate::theme::{Palette, Theme};
 use crate::ui::CIRCLE;
+use crate::{app::App, model::Overlay};
 
 pub fn render(f: &mut Frame, app: &App, p: Palette) {
     match app.overlay {
+        Some(Overlay::Theme { original }) => render_theme(f, p, app.theme, original),
         None => {}
-        Some(Overlay::Theme { original }) => render_theme_modal(f, app.theme, original, p),
     }
 }
 
-fn render_theme_modal(f: &mut Frame, preview: Theme, original: Theme, p: Palette) {
+fn render_theme(f: &mut Frame, p: Palette, preview: Theme, original: Theme) {
     let area = f.area().centered(
         Constraint::Length(50),
         Constraint::Length(Theme::ALL.len() as u16 + 2),
